@@ -11,7 +11,7 @@ interface SectionProps {
 const Section = ({
 	children,
 	className = "",
-	bgColor = "bg-white",
+	bgColor = "bg-background",
 	paddingY = "py-8",
 }: SectionProps) => {
 	return (

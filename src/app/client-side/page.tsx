@@ -8,7 +8,8 @@ import React from "react";
 
 function Client() {
 	const { isLoaded, user } = useUser();
-
+	const role = user?.unsafeMetadata.role;
+	console.log("user in client page: ", user?.unsafeMetadata.role);
 	if (!isLoaded) return <>Loading...</>;
 	return (
 		<div>
@@ -18,6 +19,7 @@ function Client() {
 						<h1 className="text-3xl font-semibold text-center">
 							👋Hello, {user?.firstName}
 						</h1>
+
 						<FadeIn>This is Client page</FadeIn>
 					</SlideIn>
 				</Container>

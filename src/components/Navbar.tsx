@@ -1,191 +1,110 @@
 "use client";
 import React, { useState } from "react";
-import { Menu, X, User, Lock, Globe, Cpu, Server } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { UserButton, useAuth } from "@clerk/nextjs";
-import { usePathname } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
+import { Menu } from "lucide-react";
 
-export default function Navbar() {
-	const [isOpen, setIsOpen] = useState<boolean>(false);
-	const { isSignedIn } = useAuth();
-	const pathname = usePathname();
+const NavigationBar = () => {
+	const { user, isSignedIn } = useUser();
+	const isTutor = user?.unsafeMetadata?.role === "tutor";
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-	const toggleMenu = () => {
-		setIsOpen(!isOpen);
+	const menuItems = [
+		{ name: "Home", href: "/" },
+		{ name: "My Course", href: "/my-courses" },
+		{ name: "Blog", href: "/blog" },
+		{ name: "Pricing", href: "/pricing" },
+		{ name: "About Us", href: "/about" },
+	];
+
+	if (isTutor) {
+		menuItems.push({ name: "Dashboard", href: "/dashboard" });
+	}
+
+	const handleMenuItemClick = () => {
+		setIsMenuOpen(false);
 	};
 
 	return (
-		<nav className="bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg fixed w-full top-0 left-0 z-50">
+		<nav className="bg-background border-b shadow-sm">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div className="flex justify-between items-center h-16">
+				<div className="flex items-center justify-between h-16">
 					{/* Logo */}
-					<div className="flex-shrink-0 flex items-center">
-						<Link href="/">
-							<span className="text-2xl font-bold text-white hover:text-yellow-300 transition duration-300">
-								MyApp
-							</span>
-						</Link>
+					<Link href="/" className="text-primary text-xl font-semibold">
+						LearnHub
+					</Link>
+
+					{/* Desktop Navigation */}
+					<div className="hidden md:flex space-x-6">
+						{menuItems.map((item) => (
+							<Link
+								key={item.name}
+								href={item.href}
+								className="text-sm md:text-base font-medium text-muted-foreground hover:text-primary transition-colors"
+							>
+								{item.name}
+							</Link>
+						))}
 					</div>
 
-					{/* Menu (Desktop) */}
-					<div className="hidden md:flex md:items-center space-x-6">
-						<NavLink
-							href="/"
-							icon={<Globe className="w-4 h-4 mr-1" />}
-							isActive={pathname === "/"}
-						>
-							Public Page
-						</NavLink>
-						<NavLink
-							href="/client-side"
-							icon={<Cpu className="w-4 h-4 mr-1" />}
-							isActive={pathname === "/client-side"}
-						>
-							Client-Side Page
-						</NavLink>
-						<NavLink
-							href="/server-side"
-							icon={<Server className="w-4 h-4 mr-1" />}
-							isActive={pathname === "/server-side"}
-						>
-							Server-Side Page
-						</NavLink>
-						<NavLink
-							href="/user-data"
-							icon={<User className="w-4 h-4 mr-1" />}
-							isActive={pathname === "/user-data"}
-						>
-							User Data
-						</NavLink>
+					{/* Login/Sign Up or User Profile Button */}
+					<div className="hidden md:block">
 						{isSignedIn ? (
-							<UserButton afterSignOutUrl="/" />
+							<UserButton />
 						) : (
-							<Link href="/sign-in">
-								<Button
-									variant="outline"
-									className="ml-4 bg-white text-indigo-600 border-transparent hover:bg-yellow-300 hover:text-indigo-700 transition duration-300 text-sm"
-								>
-									<Lock className="w-4 h-4 mr-1" />
-									Sign In
-								</Button>
-							</Link>
+							<Button variant="outline" size="sm" asChild className="text-sm">
+								<Link href="/sign-in">Login / Sign Up</Link>
+							</Button>
 						)}
 					</div>
 
-					{/* Mobile Menu Button */}
-					<div className="flex items-center md:hidden">
+					{/* Mobile Navigation */}
+					<div className="md:hidden">
 						<button
-							onClick={toggleMenu}
-							className="text-white focus:outline-none focus:ring-2 focus:ring-white rounded-md p-2"
+							onClick={() => setIsMenuOpen(!isMenuOpen)}
+							className="focus:outline-none"
 						>
-							{isOpen ? (
-								<X className="h-6 w-6" />
-							) : (
-								<Menu className="h-6 w-6" />
-							)}
+							<Menu className="h-6 w-6 text-muted-foreground hover:text-primary transition-colors" />
 						</button>
+						{isMenuOpen && (
+							<div className="absolute top-16 right-0 mt-2 w-48 bg-popover rounded-md shadow-lg z-10">
+								<ul className="p-4 space-y-2">
+									{menuItems.map((item) => (
+										<li key={item.name}>
+											<Link
+												href={item.href}
+												className="block text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+												onClick={handleMenuItemClick}
+											>
+												{item.name}
+											</Link>
+										</li>
+									))}
+									<li>
+										{isSignedIn ? (
+											<UserButton />
+										) : (
+											<Button
+												variant="outline"
+												size="sm"
+												asChild
+												className="w-full mt-2 text-sm"
+												onClick={handleMenuItemClick}
+											>
+												<Link href="/sign-in">Login / Sign Up</Link>
+											</Button>
+										)}
+									</li>
+								</ul>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
-
-			{/* Mobile Menu */}
-			{isOpen && (
-				<div className="md:hidden bg-indigo-700">
-					<div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-						<MobileNavLink
-							href="/"
-							icon={<Globe className="w-4 h-4 mr-1" />}
-							isActive={pathname === "/"}
-						>
-							Public Page
-						</MobileNavLink>
-						<MobileNavLink
-							href="/client-side"
-							icon={<Cpu className="w-4 h-4 mr-1" />}
-							isActive={pathname === "/client-side"}
-						>
-							Client-Side Page
-						</MobileNavLink>
-						<MobileNavLink
-							href="/server-side"
-							icon={<Server className="w-4 h-4 mr-1" />}
-							isActive={pathname === "/server-side"}
-						>
-							Server-Side Page
-						</MobileNavLink>
-						<MobileNavLink
-							href="/user-data"
-							icon={<User className="w-4 h-4 mr-1" />}
-							isActive={pathname === "/user-data"}
-						>
-							User Data
-						</MobileNavLink>
-						{isSignedIn ? (
-							<div className="px-3 py-2">
-								<UserButton />
-							</div>
-						) : (
-							<Link href="/sign-in">
-								<Button
-									variant="outline"
-									className="w-full mt-2 bg-white text-indigo-600 border-transparent hover:bg-yellow-300 hover:text-indigo-700 transition duration-300 text-sm"
-								>
-									<Lock className="w-4 h-4 mr-1" />
-									Sign In
-								</Button>
-							</Link>
-						)}
-					</div>
-				</div>
-			)}
 		</nav>
 	);
-}
+};
 
-interface NavLinkProps {
-	href: string;
-	icon: React.ReactNode;
-	children: React.ReactNode;
-	isActive: boolean;
-}
-
-const NavLink: React.FC<NavLinkProps> = ({
-	href,
-	icon,
-	children,
-	isActive,
-}) => (
-	<Link href={href}>
-		<span
-			className={`flex items-center text-sm ${
-				isActive
-					? "text-yellow-300 font-semibold"
-					: "text-white hover:text-yellow-300"
-			} transition duration-300`}
-		>
-			{icon}
-			{children}
-		</span>
-	</Link>
-);
-
-const MobileNavLink: React.FC<NavLinkProps> = ({
-	href,
-	icon,
-	children,
-	isActive,
-}) => (
-	<Link href={href}>
-		<span
-			className={`flex items-center ${
-				isActive
-					? "bg-indigo-800 text-yellow-300 font-semibold"
-					: "text-white hover:bg-indigo-600 hover:text-yellow-300"
-			} block rounded-md px-3 py-2 text-sm font-medium transition duration-300`}
-		>
-			{icon}
-			{children}
-		</span>
-	</Link>
-);
+export default NavigationBar;
