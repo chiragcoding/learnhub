@@ -1,37 +1,104 @@
-// models/Course.ts
+import mongoose from "mongoose";
 
-import mongoose, { Schema, Document } from "mongoose";
+const { Schema } = mongoose;
 
-export interface ICourse extends Document {
-	title: string;
-	instructor: string;
-	rating: number;
-	numRatings: number;
-	numStudents: number;
-	price: number;
-	description: string;
-	image: string;
-	category?: string;
-	duration: number; // Duration in hours
-	tags: string[]; // Array of tags for filtering
-}
+// Create a schema for course content sections
+const SectionSchema = new Schema({
+	title: {
+		type: String,
+		required: true,
+	},
+	lessons: [
+		{
+			title: {
+				type: String,
+				required: true,
+			},
+			content: {
+				type: String,
+				required: true,
+			},
+			videoUrl: {
+				type: String,
+				required: false, // Optional if there's no video
+			},
+			duration: {
+				type: Number,
+				required: false, // Optional, in minutes
+			},
+		},
+	],
+});
 
-const CourseSchema: Schema = new Schema(
+// Create a schema for course reviews
+const ReviewSchema = new Schema({
+	studentId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User",
+		required: true,
+	},
+	rating: {
+		type: Number,
+		required: true,
+		min: 1,
+		max: 5,
+	},
+	comment: {
+		type: String,
+		required: false,
+	},
+	createdAt: {
+		type: Date,
+		default: Date.now,
+	},
+});
+
+// Create the main course schema
+const CourseSchema = new Schema(
 	{
-		title: { type: String, required: true },
-		instructor: { type: String, required: true },
-		rating: { type: Number, required: true },
-		numRatings: { type: Number, required: true },
-		numStudents: { type: Number, required: true },
-		price: { type: Number, required: true },
-		description: { type: String, required: true },
-		image: { type: String, required: true },
-		category: { type: String },
-		duration: { type: Number, required: true }, // Duration in hours
-		tags: { type: [String], default: [] }, // Array of tags
+		title: {
+			type: String,
+			required: true,
+		},
+		description: {
+			type: String,
+			required: true,
+		},
+		category: {
+			type: String,
+			required: true,
+		},
+		level: {
+			type: String,
+			enum: ["Beginner", "Intermediate", "Advanced"],
+			default: "Beginner",
+		},
+		price: {
+			type: Number,
+			required: true,
+		},
+		language: {
+			type: String,
+			required: true,
+			default: "English",
+		},
+		thumbnailUrl: {
+			type: String,
+			required: false,
+		},
+		tutorId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			required: true,
+		},
+		sections: [SectionSchema],
+		reviews: [ReviewSchema],
+		enrollmentCount: {
+			type: Number,
+			default: 0,
+		},
 	},
 	{ timestamps: true }
 );
 
-export default mongoose.models.Course ||
-	mongoose.model<ICourse>("Course", CourseSchema);
+export default mongoose.models.Course || mongoose.model("Course", CourseSchema);
