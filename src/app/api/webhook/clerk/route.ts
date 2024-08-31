@@ -138,7 +138,10 @@ export async function POST(req: Request) {
 	} catch (error) {
 		console.error("Error processing webhook:", error);
 		return new Response(
-			JSON.stringify({ success: false, error: "Internal Server Error" }),
+			JSON.stringify({
+				success: false,
+				error: ` Internal Server Error ${error}`,
+			}),
 			{
 				status: 500,
 				headers: { "Content-Type": "application/json" },
