@@ -12,7 +12,7 @@ const isPublicRoute = createRouteMatcher([
 // Define public API routes that don't require authentication
 const isPublicApiRoute = createRouteMatcher([
 	"/api/user-data",
-	"/api/clerk", // Exclude the webhook endpoint here
+	"/api/webhooks/clerk", // Exclude the webhook endpoint here
 	// Add more public API routes here
 ]);
 
