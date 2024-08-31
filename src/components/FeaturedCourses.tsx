@@ -1,7 +1,7 @@
 import React from "react";
 import Section from "./myComponents/Section";
 import { sampleCourses } from "@/data/courses";
-import CourseCard from "./myComponents/CourseCard";
+import CourseCard from "./CourseCard";
 
 function FeaturedCourses() {
 	return (

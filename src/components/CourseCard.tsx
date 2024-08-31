@@ -4,7 +4,7 @@ import { Course } from "@/types/course";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Clock } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "./ui/button";
 
 interface CourseCardProps {
 	course: Course;
@@ -44,7 +44,7 @@ const getStarRating = (rating: number) => {
 
 const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
 	return (
-		<Card className="flex flex-col bg-background w-full max-w-sm overflow-hidden transition-all duration-300 hover:shadow-lg">
+		<Card className="flex flex-col bg-background w-full max-w-sm overflow-hidden hover:hover-card">
 			<div className="relative w-full h-48">
 				<Image
 					src={course.image}

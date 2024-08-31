@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +29,7 @@ export default function RootLayout({
 					<main className="flex min-h-screen flex-col items-center justify-between mt-16 bg-background">
 						{children}
 					</main>
+					<Footer />
 				</body>
 			</html>
 		</ClerkProvider>

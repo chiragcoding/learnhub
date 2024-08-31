@@ -31,7 +31,6 @@ export const useSignUpLogic = () => {
 				firstName: name.split(" ")[0],
 				lastName: name.split(" ")[1] || "",
 				emailAddress: email,
-				unsafeMetadata: { role: isUserTutor ? "tutor" : "user" },
 			});
 
 			if (userResponse.status === "missing_requirements") {

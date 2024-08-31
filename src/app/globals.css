@@ -59,6 +59,13 @@
 	}
 }
 
+/* globals.css */
+@layer utilities {
+	.hover-card {
+		@apply transition-all duration-300 hover:shadow-lg;
+	}
+}
+
 @layer base {
 	* {
 		@apply border-border;

@@ -35,7 +35,7 @@ const MergedHero = () => {
 					<Button variant="default" size="lg">
 						Explore Courses
 					</Button>
-					<Button variant="outline" size="lg">
+					<Button variant="secondary" size="lg">
 						Learn More
 					</Button>
 				</div>
