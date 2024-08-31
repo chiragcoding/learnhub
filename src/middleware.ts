@@ -6,22 +6,22 @@ const isPublicRoute = createRouteMatcher([
 	"/sign-in",
 	"/sign-up",
 	"/",
-	//! we can add more public routes here
+	// Add more public routes here
 ]);
 
 // Define public API routes that don't require authentication
 const isPublicApiRoute = createRouteMatcher([
 	"/api/user-data",
-	"/api/clerk",
-	//! we can add more public API routes here
+	"/api/clerk", // Exclude the webhook endpoint here
+	// Add more public API routes here
 ]);
 
 // Middleware function to handle authentication and routing
 export default clerkMiddleware((auth, req) => {
 	const { userId } = auth();
 	const currentUrl = new URL(req.url);
-	const isHomePage = currentUrl.pathname === "/"; // home route is available to all the users but it should include in publicRoute
-	const isApiRequest = currentUrl.pathname === "/api";
+	const isHomePage = currentUrl.pathname === "/"; // Home route is available to all users
+	const isApiRequest = currentUrl.pathname.startsWith("/api");
 
 	// Redirect authenticated users to home page if they're on a public route
 	if (userId && isPublicRoute(req) && !isHomePage) {
@@ -47,6 +47,10 @@ export default clerkMiddleware((auth, req) => {
 
 // Configuration for the middleware
 export const config = {
-	// Apply this middleware to all routes except static files and _next
-	matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+	matcher: [
+		// Skip Next.js internals and all static files, unless found in search params
+		"/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+		// Exclude the webhook endpoint and handle all other API routes
+		"/((?!api/clerk)(api|trpc)(.*))",
+	],
 };
