@@ -44,7 +44,7 @@ const SignUpForm = () => {
 	if (!isLoaded) return null;
 
 	return (
-		<Section className="bg-background rounded-lg shadow-md">
+		<Section className="bg-background rounded-lg shadow-md border-[1px] border-border">
 			<Container className="space-y-6 max-w-md w-full sm:w-96 mx-auto px-2 sm:px-4 md:px-6">
 				<div className="flex items-center flex-col">
 					<h2 className="mx-auto font-bold">Create your account</h2>
@@ -144,7 +144,7 @@ const SignUpForm = () => {
 
 				<Button
 					type="button"
-					variant="secondary"
+					variant="outline"
 					onClick={handleGoogleSignUp}
 					className="w-full flex items-center justify-center gap-2"
 					disabled={isGoogleLoading}
