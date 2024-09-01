@@ -13,6 +13,8 @@ const isPublicRoute = createRouteMatcher([
 const isPublicApiRoute = createRouteMatcher([
 	"/api/user-data",
 	"/api/webhook/clerk", // Add the webhook route here
+	"/api/courses/search",
+	"/api/courses/health",
 	//! we can add more public API routes here
 ]);
 

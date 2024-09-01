@@ -1,8 +1,18 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Schema, Model } from "mongoose";
 
-const { Schema } = mongoose;
+// Define the User interface for TypeScript
+interface IUser extends Document {
+	clerkUserId: string;
+	email: string;
+	name: string;
+	role: "student" | "creator" | "admin";
+	profileImage?: string;
+	enrolledCourses: mongoose.Types.ObjectId[];
+	createdCourses: mongoose.Types.ObjectId[];
+}
 
-const UserSchema = new Schema(
+// Create the User schema
+const UserSchema = new Schema<IUser>(
 	{
 		clerkUserId: {
 			type: String,
@@ -27,16 +37,15 @@ const UserSchema = new Schema(
 		profileImage: {
 			type: String,
 		},
-
 		enrolledCourses: [
 			{
-				type: mongoose.Schema.Types.ObjectId,
+				type: Schema.Types.ObjectId,
 				ref: "Course",
 			},
 		],
 		createdCourses: [
 			{
-				type: mongoose.Schema.Types.ObjectId,
+				type: Schema.Types.ObjectId,
 				ref: "Course",
 			},
 		],
@@ -44,4 +53,8 @@ const UserSchema = new Schema(
 	{ timestamps: true }
 );
 
-export default mongoose.models.User || mongoose.model("User", UserSchema);
+// Check if the model already exists before creating a new one
+const User: Model<IUser> =
+	mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+
+export default User;
